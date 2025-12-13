@@ -1,16 +1,16 @@
-/* style.css - Link-in-Bio Style */
+/* style.css - Final Professional Dark/Gold Theme with Panel */
 
-/* Basic Reset */
+/* General Styles and Reset */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #121212; /* Deep Dark Background */
-    color: #fff;
+    font-family: 'Arial', sans-serif;
+    background-color: #1a1a1a; /* Dark background */
+    color: #fff; /* White text */
     margin: 0;
     padding: 0;
     line-height: 1.6;
     display: flex;
     flex-direction: column;
-    min-height: 100vh; /* Full screen height */
+    min-height: 100vh;
 }
 
 /* Main Container - Center the content */
@@ -30,12 +30,12 @@ body {
 
 h1 {
     color: #ffd700; /* Gold Heading */
-    font-size: 2.2rem;
+    font-size: 2.5rem;
     margin: 0;
 }
 
 .profile-header p {
-    color: #aaa;
+    color: #ddd;
     font-size: 1.1rem;
     margin-top: 5px;
 }
@@ -44,75 +44,210 @@ h1 {
 .links-section {
     display: flex;
     flex-direction: column;
-    gap: 15px; /* Links ke beech ki jagah */
+    gap: 18px;
 }
 
+/* Link Button Styling */
 .link-button {
     display: block;
-    padding: 15px 20px;
+    padding: 15px 25px;
     text-decoration: none;
     font-weight: bold;
-    border-radius: 10px;
-    font-size: 1.1rem;
+    border-radius: 8px; 
+    font-size: 1.2rem;
     transition: transform 0.2s, box-shadow 0.2s;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
 }
-
 .link-button:hover {
     transform: translateY(-3px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.6);
 }
+.link-button i { margin-right: 10px; width: 20px; text-align: center; }
 
-/* Icons Styling */
-.link-button i {
-    margin-right: 10px;
-    width: 20px;
-    text-align: center;
-}
+/* Specific Link Colors */
+.telegram { background-color: #0088cc; color: white; }
+.whatsapp { background-color: #25d366; color: white; }
+.youtube { background-color: #ff0000; color: white; }
+.instagram { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color: white; }
+.facebook { background-color: #1877f2; color: white; }
+.download { background-color: #ffd700; color: #1a1a1a; }
 
-/* Specific Link Colors (Brand Colors) */
-.telegram {
-    background-color: #0088cc;
-    color: white;
-}
-.whatsapp {
-    background-color: #25d366;
-    color: white;
-}
-.youtube {
-    background-color: #ff0000;
-    color: white;
-}
-.instagram {
-    background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
-    color: white;
-}
-.facebook {
-    background-color: #1877f2;
-    color: white;
-}
-.download {
-    background-color: #ffd700; /* Gold for download */
-    color: #121212;
-}
-
-/* Footer */
+/* Footer Styling */
 footer {
     text-align: center;
-    padding: 15px;
+    padding: 20px;
     background-color: #000;
-    color: #888;
-    font-size: 0.85rem;
+    color: #aaa;
+    font-size: 0.9rem;
     margin-top: auto;
 }
 
-/* Mobile Responsiveness */
-@media (max-width: 600px) {
-    .container {
-        margin: 20px auto;
-    }
-    .link-button {
-        padding: 12px 15px;
-        font-size: 1rem;
-    }
+/* --- Profile Photo and Sliding Panel Styles --- */
+
+/* 1. Profile Photo (Top Left Corner) */
+#profilePhoto {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    overflow: hidden;
+    cursor: pointer;
+    z-index: 1001;
+    box-shadow: 0 0 10px #ffd700; /* Gold shadow */
+    transition: transform 0.3s;
 }
+
+#profilePhoto:hover {
+    transform: scale(1.05);
+}
+
+#profilePhoto img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* 2. Sliding Side Panel */
+.side-panel {
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    left: -100%; /* Hidden by default */
+    background-color: #1a1a1a;
+    color: #fff;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+    box-shadow: 10px 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.panel-content {
+    padding: 20px;
+    text-align: center;
+}
+
+.side-panel h2 {
+    color: #ffd700;
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+.side-panel hr {
+    border-color: #ffd700;
+    width: 50%;
+    margin: 20px auto;
+}
+
+.app-message {
+    font-size: 1.2rem;
+    color: #25d366;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+.thank-you {
+    margin-top: 30px;
+    color: #ddd;
+}
+
+/* Close button (X) */
+.side-panel .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+    text-decoration: none;
+    color: #ffd700;
+}
+/* --- CSS for APK Store Page (store.html) --- */
+
+.store-container {
+    padding-top: 20px;
+}
+
+.app-list-section {
+    margin-top: 30px;
+}
+
+.app-card {
+    background-color: #2b2b2b; /* Slightly lighter dark background */
+    border: 1px solid #3a3a3a;
+    border-left: 5px solid #ffd700; /* Gold highlight */
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    text-align: left;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.app-card h3 {
+    color: #ffd700;
+    margin-top: 0;
+    margin-bottom: 5px;
+}
+
+.app-description {
+    color: #ccc;
+    font-size: 0.95rem;
+}
+
+.version {
+    color: #888;
+    font-size: 0.85rem;
+    margin-bottom: 15px;
+}
+
+/* Download Button Styling */
+.download-btn {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: default; /* Mouse pointer default rahega */
+    transition: none;
+}
+
+/* Non-Clickable State */
+.non-clickable {
+    background-color: #555; /* Greyed out color */
+    color: #bbb;
+    opacity: 0.8;
+    /* Non-clickable button ko shadow aur hover effect nahi milega */
+    box-shadow: none !important;
+    transform: none !important;
+}
+
+/* Coming Soon Message */
+.coming-soon-message {
+    text-align: center;
+    margin: 40px 0;
+    font-size: 1.5rem;
+    color: #ffd700;
+}
+
+.coming-soon-message p {
+    font-style: italic; /* Tirche spelling (Italic) */
+    text-decoration: underline;
+}
+
+/* Back to Home Button */
+.back-home-btn {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-top: 20px;
+    background-color: #333;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    text-align: center;
+    font-weight: bold;
+    }
+    
