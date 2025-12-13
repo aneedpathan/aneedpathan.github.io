@@ -4,13 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aneed Pathan - Official Links</title>
-    <meta name="description" content="Aneed Pathan official contact and social media hub. Connect on Telegram, WhatsApp, YouTube, Instagram, and Facebook.">
-    
     <link rel="stylesheet" href="style.css"> 
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
+    
+    <div id="profilePhoto" onclick="openSidePanel()">
+        <img src="IMG_20251128_115712~2.jpg" alt="Aneed Pathan Profile">
+    </div>
+
+    <div id="sidePanel" class="side-panel">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeSidePanel()">&times;</a>
+        
+        <div class="panel-content">
+            <h2>👋 Welcome!</h2>
+            <p>Aapka swagat hai!</p>
+            <hr>
+            <h3>🌟 Important Message 🌟</h3>
+            <p class="app-message">
+                APK file jald hi mil jayegi. Jo bhi app aapki country mein band hai, woh yahan uplabdh hogi.
+            </p>
+            <p class="thank-you">Thank you for your support!</p>
+        </div>
+    </div>
     
     <div class="container">
         
@@ -41,7 +58,9 @@
                 <i class="fab fa-facebook-f"></i> Facebook Page
             </a>
 
-            <a href="https://github.com/aneedpathan/aneedpathan/releases" target="_blank" class="link-button download">
+            <a href="store.html" target="_self" class="link-button download">
+    <i class="fas fa-download"></i> APK Store / Latest Release
+</a>
                 <i class="fas fa-download"></i> Download Latest Release
             </a>
             
@@ -51,6 +70,8 @@
     <footer>
         <p>&copy; 2025 Aneed Pathan. All Rights Reserved.</p>
     </footer>
+
+    <script src="script.js"></script>
 
 </body>
 </html>
