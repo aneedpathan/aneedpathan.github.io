@@ -8,79 +8,96 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Monetag / Vignette Ad -->
+    <script>
+    (function(s){
+        s.dataset.zone='10353117';
+        s.src='https://gizokraijaw.net/vignette.min.js';
+    })([document.documentElement, document.body].filter(Boolean).pop()
+      .appendChild(document.createElement('script')));
+    </script>
 </head>
-    <script>(function(s){s.dataset.zone='10353117',s.src='https://gizokraijaw.net/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
 
 <body>
 
-    <!-- Profile Photo -->
-    <div id="profilePhoto" onclick="openSidePanel()">
-        <img src="IMG_20251128_115712~2.jpg" alt="Aneed Pathan Profile">
+<!-- Profile Photo -->
+<div id="profilePhoto" onclick="openSidePanel()">
+    <img src="IMG_20251128_115712~2.jpg" alt="Aneed Pathan Profile">
+</div>
+
+<!-- Side Panel -->
+<div id="sidePanel" class="side-panel">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeSidePanel()">&times;</a>
+
+    <div class="panel-content">
+        <h2>👋 Welcome!</h2>
+        <p>Aapka swagat hai!</p>
+        <hr>
+        <h3>🌟 Important Message 🌟</h3>
+        <p class="app-message">
+            APK file jald hi mil jayegi.  
+            Jo bhi app aapki country mein band hai,
+            woh yahan uplabdh hogi.
+        </p>
+        <p class="thank-you">Thank you for your support!</p>
     </div>
+</div>
 
-    <!-- Side Panel -->
-    <div id="sidePanel" class="side-panel">
-        <a href="javascript:void(0)" class="closebtn" onclick="closeSidePanel()">&times;</a>
+<!-- Main Content -->
+<div class="container">
 
-        <div class="panel-content">
-            <h2>👋 Welcome!</h2>
-            <p>Aapka swagat hai!</p>
-            <hr>
-            <h3>🌟 Important Message 🌟</h3>
-            <p class="app-message">
-                APK file jald hi mil jayegi. Jo bhi app aapki country mein band hai,
-                woh yahan uplabdh hogi.
-            </p>
-            <p class="thank-you">Thank you for your support!</p>
-        </div>
-    </div>
+    <header class="profile-header">
+        <h1>ANEED PATHAN</h1>
+        <p>Official Hub | Connect with me on all platforms!</p>
+    </header>
 
-    <!-- Main Content -->
-    <div class="container">
+    <main class="links-section">
 
-        <header class="profile-header">
-            <h1>ANEED PATHAN</h1>
-            <p>Official Hub | Connect with me on all platforms!</p>
-        </header>
+        <a href="https://t.me/aneedpathan" class="link-button telegram">
+            <i class="fab fa-telegram-plane"></i> Telegram Channel
+        </a>
 
-        <main class="links-section">
+        <a href="https://wa.me/channel/0029Vb5yC2A1CYoQFCIlcZ2M" class="link-button whatsapp">
+            <i class="fab fa-whatsapp"></i> WhatsApp Channel
+        </a>
 
-            <!-- TELEGRAM -->
-            <a href="https://t.me/aneedpathan" class="link-button telegram">
-                <i class="fab fa-telegram-plane"></i> Telegram Channel
-            </a>
+        <a href="https://www.youtube.com/@aneed_pathan" class="link-button youtube">
+            <i class="fab fa-youtube"></i> YouTube Channel
+        </a>
 
-            <!-- WHATSAPP CHANNEL -->
-            <a href="https://wa.me/channel/0029Vb5yC2A1CYoQFCIlcZ2M" class="link-button whatsapp">
-                <i class="fab fa-whatsapp"></i> WhatsApp Channel
-            </a>
+        <a href="intent://instagram.com/aneed_pathan/#Intent;package=com.instagram.android;scheme=https;end"
+           class="link-button instagram">
+            <i class="fab fa-instagram"></i> Instagram
+        </a>
 
-            <!-- YOUTUBE -->
-            <a href="https://www.youtube.com/@aneed_pathan" class="link-button youtube">
-                <i class="fab fa-youtube"></i> YouTube Channel
-            </a>
+        <a href="https://www.facebook.com/share/1FYT8qycBg/" class="link-button facebook">
+            <i class="fab fa-facebook-f"></i> Facebook Page
+        </a>
 
-            <!-- INSTAGRAM (DIRECT APP OPEN FIX) -->
-            <a href="intent://instagram.com/aneed_pathan/#Intent;package=com.instagram.android;scheme=https;end"
-               class="link-button instagram">
-                <i class="fab fa-instagram"></i> Instagram
-            </a>
+        <a href="store/index.html" class="link-button download">
+            <i class="fas fa-download"></i> APK Store / Latest Release
+        </a>
 
-            <!-- FACEBOOK -->
-            <a href="https://www.facebook.com/share/1FYT8qycBg/" class="link-button facebook">
-                <i class="fab fa-facebook-f"></i> Facebook Page
-            </a>
+        <!-- 💰 EARN OPTION -->
+        <a href="earn.html" class="earn-link">💰 Earn Money</a>
 
-            <!-- APK STORE -->
-            <a href="store/index.html" class="link-button download">
-                <i class="fas fa-download"></i> APK Store / Latest Release
-            </a>
+    </main>
+</div>
 
-        </main>
-    </div>
+<footer>
+    <p>&copy; 2025 Aneed Pathan. All Rights Reserved.</p>
+</footer>
 
-    <footer>
-        <p>&copy; 2025 Aneed Pathan. All Rights Reserved.</p>
-    </footer>
+<!-- ✅ SIDE PANEL JS -->
+<script>
+function openSidePanel() {
+    document.getElementById("sidePanel").style.width = "260px";
+}
+function closeSidePanel() {
+    document.getElementById("sidePanel").style.width = "0";
+}
+</script>
 
-    <script src="script
+</body>
+</html>
