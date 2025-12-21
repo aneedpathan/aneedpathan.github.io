@@ -1,13 +1,27 @@
-/* script.js */
+// LOGIN
+function login() {
+  const user = document.getElementById("user").value;
+  const pass = document.getElementById("pass").value;
 
-// Function to open the side panel
-function openSidePanel() {
-    // Panel ko left se poora screen mein laata hai
-    document.getElementById("sidePanel").style.left = "0";
+  if (user && pass) {
+    localStorage.setItem("loggedIn", "yes");
+    localStorage.setItem("userID", user);
+    localStorage.setItem("coins", 0);
+    window.location.href = "earn.html";
+  } else {
+    alert("User ID aur Password required");
+  }
 }
 
-// Function to close the side panel
-function closeSidePanel() {
-    // Panel ko wapas left mein chupa deta hai
-    document.getElementById("sidePanel").style.left = "-100%";
+// EARN COIN
+function earnCoin() {
+  let coins = parseInt(localStorage.getItem("coins") || "0");
+  coins++;
+  localStorage.setItem("coins", coins);
+  document.getElementById("coins").innerText = coins;
 }
+
+// AUTO LOGOUT (safety)
+window.addEventListener("beforeunload", function () {
+  localStorage.removeItem("loggedIn");
+});
