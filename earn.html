@@ -2,78 +2,88 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Earn Coins</title>
+<title>Earn Money</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
 <style>
 body{
-  margin:0;
-  background:#0b132b;
-  color:#fff;
-  font-family:Arial;
-  text-align:center;
+    background:#000;
+    color:#fff;
+    font-family: Arial;
+    margin:0;
+    padding:15px;
 }
-.box{
-  margin-top:40px;
+.card{
+    background:#111;
+    padding:15px;
+    border-radius:10px;
+    margin-bottom:15px;
 }
-button{
-  background:#22c55e;
-  border:none;
-  padding:15px 25px;
-  color:#000;
-  font-size:18px;
-  border-radius:10px;
-  cursor:pointer;
+input,button{
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+    border:none;
+    border-radius:6px;
+    font-size:15px;
 }
+input{background:#222;color:#fff;}
+button{background:#FFD700;color:#000;font-weight:bold;}
+.locked{opacity:.6;pointer-events:none;}
 </style>
 </head>
+
 <body>
 
-<div class="box">
-  <h3>User ID</h3>
-  <h2 id="uid">---</h2>
+<div class="card">
+    <div><b>User ID:</b> <span id="uid">Loading...</span></div>
+    <div><b>Coins:</b> <span id="coins">10</span></div>
+</div>
 
-  <h3>Total Coins</h3>
-  <h1 id="coins">0</h1>
-
-  <button onclick="completeTask()">Complete Task (+10)</button>
-
-  <p style="opacity:.6;margin-top:20px;">Coins are synced online</p>
+<div class="card" id="upiBox">
+    <b>💳 Add Your UPI ID</b>
+    <input type="text" id="upi" placeholder="example@upi">
+    <button onclick="saveUPI()">Save UPI ID</button>
 </div>
 
 <script>
-const params = new URLSearchParams(window.location.search);
-const uid = params.get("uid");
+/* ========= CONFIG ========= */
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw3FaMdic9THdnwO8RZq2M_UU-fkvnUI8IyoK5d-fKLdtQs21ItF7T8WwlRhS2UPBk2ug/exec";
 
+/* ========= USER ID ========= */
+let uid = localStorage.getItem("uid");
 if(!uid){
-  document.body.innerHTML = "<h2>Invalid User</h2>";
+    uid = "APH-" + Math.floor(100000 + Math.random()*900000);
+    localStorage.setItem("uid", uid);
 }
-
-const API = "https://script.google.com/macros/s/AKfycbw3FaMdic9THdnwO8RZq2M_UU-fkvnUI8IyoK5d-fKLdtQs21ItF7T8WwlRhS2UPBk2ug/exec";
-
 document.getElementById("uid").innerText = uid;
 
-function loadCoins(){
- fetch(API + "?uid=" + uid)
-  .then(r=>r.json())
-  .then(d=>{
-    document.getElementById("coins").innerText = d.coins || 0;
-  });
+/* ========= UPI ========= */
+const savedUPI = localStorage.getItem("upi");
+if(savedUPI){
+    document.getElementById("upi").value = savedUPI;
+    document.getElementById("upiBox").classList.add("locked");
 }
 
-let lock = false;
+/* ========= SAVE UPI ========= */
+function saveUPI(){
+    const upi = document.getElementById("upi").value.trim();
+    if(!upi){
+        alert("Enter valid UPI ID");
+        return;
+    }
 
-function completeTask(){
- if(lock) return;
- lock = true;
-
- fetch(API + "?uid=" + uid + "&add=10")
-  .then(r=>r.json())
-  .then(d=>{
-    document.getElementById("coins").innerText = d.coins;
-    setTimeout(()=>lock=false,3000);
-  });
+    fetch(`${SCRIPT_URL}?user=${uid}&upi=${upi}&coins=10`)
+    .then(r=>r.text())
+    .then(()=>{
+        localStorage.setItem("upi", upi);
+        document.getElementById("upiBox").classList.add("locked");
+        alert("UPI Saved Successfully ✅");
+    })
+    .catch(()=>{
+        alert("Network error");
+    });
 }
-
-loadCoins();
 </script>
 
 </body>
