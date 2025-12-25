@@ -2,134 +2,106 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Earn Money</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<title>Earn Coins</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
 body{
-    margin:0;
-    font-family:Arial, sans-serif;
-    background:#000;
-    color:#fff;
-}
-.box{
-    max-width:420px;
-    margin:30px auto;
-    padding:20px;
-    background:#111;
-    border-radius:14px;
-}
-h2{
-    margin:5px 0;
+  background:#0b0f1a;
+  color:#fff;
+  font-family:Arial;
+  text-align:center;
+  padding:20px;
 }
 .card{
-    background:#1b1b1b;
-    padding:15px;
-    border-radius:12px;
-    margin-top:15px;
-}
-input{
-    width:100%;
-    padding:12px;
-    border-radius:10px;
-    border:none;
-    outline:none;
-    background:#222;
-    color:#fff;
-    font-size:15px;
+  background:#121a2f;
+  border-radius:14px;
+  padding:20px;
+  margin:15px auto;
+  max-width:420px;
 }
 button{
-    width:100%;
-    margin-top:12px;
-    padding:14px;
-    border:none;
-    border-radius:12px;
-    background:#FFD700;
-    color:#000;
-    font-size:16px;
-    font-weight:bold;
+  background:#1ecb4f;
+  color:#000;
+  border:none;
+  padding:15px;
+  width:100%;
+  font-size:18px;
+  border-radius:10px;
+  cursor:pointer;
 }
-.small{
-    font-size:13px;
-    color:#aaa;
-    text-align:center;
-    margin-top:10px;
+button:disabled{opacity:.5;}
+input{
+  width:100%;
+  padding:12px;
+  border-radius:8px;
+  border:none;
+  margin-top:10px;
 }
-.green{
-    color:#00ff00;
-}
-.red{
-    color:red;
+.warn{
+  color:#ffcc00;
+  font-size:13px;
+  margin-top:6px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="box">
+<h2>💰 Earn Coins</h2>
 
-    <h2>User ID: <span id="uid" class="green">---</span></h2>
-    <h2>Coins: <span id="coins" class="green">0</span></h2>
+<div class="card">
+  <b>User ID:</b> <span id="uid">---</span><br><br>
+  <b>Total Coins:</b> <span id="coins">0</span>
+</div>
 
-    <div class="card">
-        <h3>💼 Add Your UPI ID</h3>
-        <input type="text" id="upi" placeholder="example@paytm">
-        <button onclick="saveUPI()">Save UPI ID</button>
-    </div>
+<div class="card" id="upiBox">
+  <h3>🔐 Add Your UPI ID</h3>
+  <input id="upi" placeholder="example@upi">
+  <button onclick="saveUpi()">Save UPI ID</button>
+  <div class="warn">⚠️ UPI ID can be added only once. Cannot be changed.</div>
+</div>
 
-    <div class="card">
-        <button onclick="completeTask()">✅ Complete Task (+10)</button>
-        <div class="small">Coins are synced online</div>
-    </div>
-
+<div class="card">
+  <button id="taskBtn" onclick="completeTask()">Complete Task (+10)</button>
 </div>
 
 <script>
-/* 🔴 CHANGE ONLY THIS IF SCRIPT URL CHANGES */
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw3FaMdic9THdnwO8RZq2M_UU-fkvnUI8IyoK5d-fKLdtQs21ItF7T8WwlRhS2UPBk2ug/exec";
-
-/* ✅ GET USER ID FROM APP */
-const params = new URLSearchParams(window.location.search);
-const uid = params.get("uid");
-
-if(!uid){
-    document.body.innerHTML = "<h2 style='color:red;text-align:center'>Invalid User</h2>";
-    throw "Invalid User";
-}
-
+const API = "https://script.google.com/macros/s/AKfycbz4NJNIwumeIrfQLG7xLneFsfbyGqPyD8ij3n3YCm5pGQXJFMPlR3-pYQex5hCHzHilIQ/exec";
+const uid = new URLSearchParams(location.search).get("uid");
 document.getElementById("uid").innerText = uid;
 
-/* 🔄 LOAD COINS */
-fetch(SCRIPT_URL + "?uid=" + uid)
-.then(r => r.json())
-.then(d => {
-    if(d.coins !== undefined){
-        document.getElementById("coins").innerText = d.coins;
+function loadData(){
+  fetch(`${API}?uid=${uid}`)
+  .then(r=>r.json())
+  .then(d=>{
+    document.getElementById("coins").innerText = d.coins;
+    if(d.upi){
+      document.getElementById("upiBox").innerHTML =
+        `<b>UPI ID 🔒</b><br>${d.upi}<div class='warn'>Locked – cannot change</div>`;
     }
-});
+  });
+}
+loadData();
 
-/* 💾 SAVE UPI */
-function saveUPI(){
-    const upi = document.getElementById("upi").value.trim();
-    if(upi.length < 5){
-        alert("Valid UPI ID dalo");
-        return;
-    }
-
-    fetch(SCRIPT_URL + "?uid=" + uid + "&upi=" + encodeURIComponent(upi))
-    .then(r => r.text())
-    .then(() => {
-        alert("UPI ID saved successfully");
-    });
+function saveUpi(){
+  const u = document.getElementById("upi").value.trim();
+  if(!u || !u.includes("@")){alert("Invalid UPI ID");return;}
+  fetch(`${API}?uid=${uid}&upi=${u}`).then(()=>loadData());
 }
 
-/* 💰 COMPLETE TASK */
+let locked=false;
 function completeTask(){
-    fetch(SCRIPT_URL + "?uid=" + uid + "&add=10")
-    .then(r => r.json())
-    .then(d => {
-        document.getElementById("coins").innerText = d.coins;
-    });
+  if(locked) return;
+  locked=true;
+  document.getElementById("taskBtn").disabled=true;
+  fetch(`${API}?uid=${uid}&add=10`)
+  .then(()=>loadData())
+  .finally(()=>{
+    setTimeout(()=>{
+      locked=false;
+      document.getElementById("taskBtn").disabled=false;
+    },3000);
+  });
 }
 </script>
 
