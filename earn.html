@@ -1,25 +1,138 @@
-<script>
-if (localStorage.getItem("loggedIn") !== "yes") {
-  window.location.href = "login.html";
-}
-</script>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+<meta charset="UTF-8">
 <title>Earn Coins</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  margin:0;
+  font-family: Arial, sans-serif;
+  background:#0f172a;
+  color:#fff;
+}
+.box{
+  padding:20px;
+}
+.card{
+  background:#111827;
+  border-radius:12px;
+  padding:15px;
+  margin-bottom:15px;
+}
+.btn{
+  background:#22c55e;
+  color:#000;
+  padding:12px;
+  border:none;
+  width:100%;
+  border-radius:10px;
+  font-size:16px;
+  cursor:pointer;
+}
+.btn:disabled{
+  background:#555;
+}
+.center{
+  text-align:center;
+}
+.big{
+  font-size:28px;
+  font-weight:bold;
+}
+.small{
+  opacity:.7;
+}
+</style>
 </head>
+
 <body>
 
-<h2>Welcome <span id="user"></span></h2>
+<div class="box">
 
-<h3>🪙 Coins: <span id="coins">0</span></h3>
+  <div class="card center">
+    <div class="small">User ID</div>
+    <div id="uid" class="big">---</div>
+  </div>
 
-<button onclick="addCoin()">Watch Ad (+1 Coin)</button>
+  <div class="card center">
+    <div class="small">Total Coins</div>
+    <div id="coins" class="big">0</div>
+  </div>
 
-<br><br>
-<a href="leaderboard.html">🏆 Top Coins This Week</a>
+  <div class="card">
+    <button class="btn" onclick="completeTask()">Complete Task (+10)</button>
+  </div>
 
-<script src="auth.js"></script>
+  <div class="card center small">
+    Coins are synced online
+  </div>
+
+</div>
+
+<script>
+/* ===== CONFIG ===== */
+const SCRIPT_URL =
+"https://script.google.com/macros/s/AKfycbw3FaMdic9THdnwO8RZq2M_UU-fkvnUI8IyoK5d-fKLdtQs21ItF7T8WwlRhS2UPBk2ug/exec";
+
+/* ===== USER DATA (App WebView se aa sakta hai) ===== */
+let USER_ID = localStorage.getItem("uid");
+if(!USER_ID){
+  USER_ID = "user_" + Math.floor(Math.random()*1000000);
+  localStorage.setItem("uid", USER_ID);
+}
+document.getElementById("uid").innerText = USER_ID;
+
+/* ===== INTERNET CHECK ===== */
+function isOnline(){
+  return navigator.onLine;
+}
+
+/* ===== LOAD COINS ===== */
+function loadCoins(){
+  if(!isOnline()){
+    document.getElementById("coins").innerText = "No Internet";
+    return;
+  }
+
+  fetch(SCRIPT_URL + "?uid=" + USER_ID)
+  .then(r => r.json())
+  .then(d => {
+    if(d.coins !== undefined){
+      document.getElementById("coins").innerText = d.coins;
+    }
+  })
+  .catch(()=>{
+    document.getElementById("coins").innerText = "Error";
+  });
+}
+
+/* ===== COMPLETE TASK ===== */
+function completeTask(){
+  if(!isOnline()){
+    alert("No Internet Connection");
+    return;
+  }
+
+  fetch(SCRIPT_URL + "?uid=" + USER_ID + "&add=10")
+  .then(r => r.json())
+  .then(d => {
+    document.getElementById("coins").innerText = d.coins;
+  })
+  .catch(()=>{
+    alert("Server Error");
+  });
+}
+
+/* ===== AUTO LOAD ===== */
+window.addEventListener("online", loadCoins);
+window.addEventListener("offline", ()=> {
+  document.getElementById("coins").innerText = "No Internet";
+});
+
+loadCoins();
+</script>
+
 </body>
 </html>
