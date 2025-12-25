@@ -1,87 +1,134 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <title>Earn Money</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 body{
+    margin:0;
+    font-family:Arial, sans-serif;
     background:#000;
     color:#fff;
-    font-family: Arial;
-    margin:0;
-    padding:15px;
+}
+.box{
+    max-width:420px;
+    margin:30px auto;
+    padding:20px;
+    background:#111;
+    border-radius:14px;
+}
+h2{
+    margin:5px 0;
 }
 .card{
-    background:#111;
+    background:#1b1b1b;
     padding:15px;
-    border-radius:10px;
-    margin-bottom:15px;
+    border-radius:12px;
+    margin-top:15px;
 }
-input,button{
+input{
     width:100%;
     padding:12px;
-    margin-top:10px;
+    border-radius:10px;
     border:none;
-    border-radius:6px;
+    outline:none;
+    background:#222;
+    color:#fff;
     font-size:15px;
 }
-input{background:#222;color:#fff;}
-button{background:#FFD700;color:#000;font-weight:bold;}
-.locked{opacity:.6;pointer-events:none;}
+button{
+    width:100%;
+    margin-top:12px;
+    padding:14px;
+    border:none;
+    border-radius:12px;
+    background:#FFD700;
+    color:#000;
+    font-size:16px;
+    font-weight:bold;
+}
+.small{
+    font-size:13px;
+    color:#aaa;
+    text-align:center;
+    margin-top:10px;
+}
+.green{
+    color:#00ff00;
+}
+.red{
+    color:red;
+}
 </style>
 </head>
 
 <body>
 
-<div class="card">
-    <div><b>User ID:</b> <span id="uid">Loading...</span></div>
-    <div><b>Coins:</b> <span id="coins">10</span></div>
-</div>
+<div class="box">
 
-<div class="card" id="upiBox">
-    <b>💳 Add Your UPI ID</b>
-    <input type="text" id="upi" placeholder="example@upi">
-    <button onclick="saveUPI()">Save UPI ID</button>
+    <h2>User ID: <span id="uid" class="green">---</span></h2>
+    <h2>Coins: <span id="coins" class="green">0</span></h2>
+
+    <div class="card">
+        <h3>💼 Add Your UPI ID</h3>
+        <input type="text" id="upi" placeholder="example@paytm">
+        <button onclick="saveUPI()">Save UPI ID</button>
+    </div>
+
+    <div class="card">
+        <button onclick="completeTask()">✅ Complete Task (+10)</button>
+        <div class="small">Coins are synced online</div>
+    </div>
+
 </div>
 
 <script>
-/* ========= CONFIG ========= */
+/* 🔴 CHANGE ONLY THIS IF SCRIPT URL CHANGES */
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw3FaMdic9THdnwO8RZq2M_UU-fkvnUI8IyoK5d-fKLdtQs21ItF7T8WwlRhS2UPBk2ug/exec";
 
-/* ========= USER ID ========= */
-let uid = localStorage.getItem("uid");
+/* ✅ GET USER ID FROM APP */
+const params = new URLSearchParams(window.location.search);
+const uid = params.get("uid");
+
 if(!uid){
-    uid = "APH-" + Math.floor(100000 + Math.random()*900000);
-    localStorage.setItem("uid", uid);
+    document.body.innerHTML = "<h2 style='color:red;text-align:center'>Invalid User</h2>";
+    throw "Invalid User";
 }
+
 document.getElementById("uid").innerText = uid;
 
-/* ========= UPI ========= */
-const savedUPI = localStorage.getItem("upi");
-if(savedUPI){
-    document.getElementById("upi").value = savedUPI;
-    document.getElementById("upiBox").classList.add("locked");
-}
+/* 🔄 LOAD COINS */
+fetch(SCRIPT_URL + "?uid=" + uid)
+.then(r => r.json())
+.then(d => {
+    if(d.coins !== undefined){
+        document.getElementById("coins").innerText = d.coins;
+    }
+});
 
-/* ========= SAVE UPI ========= */
+/* 💾 SAVE UPI */
 function saveUPI(){
     const upi = document.getElementById("upi").value.trim();
-    if(!upi){
-        alert("Enter valid UPI ID");
+    if(upi.length < 5){
+        alert("Valid UPI ID dalo");
         return;
     }
 
-    fetch(`${SCRIPT_URL}?user=${uid}&upi=${upi}&coins=10`)
-    .then(r=>r.text())
-    .then(()=>{
-        localStorage.setItem("upi", upi);
-        document.getElementById("upiBox").classList.add("locked");
-        alert("UPI Saved Successfully ✅");
-    })
-    .catch(()=>{
-        alert("Network error");
+    fetch(SCRIPT_URL + "?uid=" + uid + "&upi=" + encodeURIComponent(upi))
+    .then(r => r.text())
+    .then(() => {
+        alert("UPI ID saved successfully");
+    });
+}
+
+/* 💰 COMPLETE TASK */
+function completeTask(){
+    fetch(SCRIPT_URL + "?uid=" + uid + "&add=10")
+    .then(r => r.json())
+    .then(d => {
+        document.getElementById("coins").innerText = d.coins;
     });
 }
 </script>
