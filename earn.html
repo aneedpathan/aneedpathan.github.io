@@ -30,7 +30,6 @@ button{
 }
 button:disabled{
   opacity:.5;
-  cursor:not-allowed;
 }
 input{
   width:100%;
@@ -38,16 +37,17 @@ input{
   border-radius:8px;
   border:none;
   margin-top:10px;
+  font-size:16px;
 }
 .warn{
   color:#ffcc00;
   font-size:13px;
   margin-top:8px;
 }
-.coming{
-  color:#00e0ff;
-  font-size:14px;
-  margin-top:10px;
+.lock{
+  color:#00ffcc;
+  font-size:13px;
+  margin-top:6px;
 }
 </style>
 </head>
@@ -63,15 +63,21 @@ input{
 
 <div class="card" id="upiBox">
   <h3>🔐 Add Your UPI ID</h3>
-  <input id="upi" placeholder="example@upi">
-  <button onclick="saveUpi()">Save UPI ID</button>
-  <div class="warn">⚠️ UPI ID can be added only once. Cannot be changed.</div>
-</div>
 
-<!-- TASK CARD (DISABLED) -->
-<div class="card">
-  <button disabled>Complete Task (+10)</button>
-  <div class="coming">🚧 This feature coming soon</div>
+  <input 
+    id="upi"
+    placeholder="example@upi"
+    inputmode="email"
+    autocomplete="on"
+  >
+
+  <button onclick="saveUpi()">Save UPI ID</button>
+
+  <div class="warn">
+    ⚠️ Warning / चेतावनी<br>
+    Aapke dwara kamayi gayi rakam isi UPI ID / number par transfer hogi.<br>
+    Once save karne ke baad ise change nahi kiya ja sakta.
+  </div>
 </div>
 
 <script>
@@ -86,19 +92,32 @@ function loadData(){
     document.getElementById("coins").innerText = d.coins;
     if(d.upi){
       document.getElementById("upiBox").innerHTML =
-        `<b>UPI ID 🔒</b><br>${d.upi}<div class='warn'>Locked – cannot change</div>`;
+        `<b>UPI ID 🔒</b><br>
+         ${d.upi}
+         <div class="lock">
+           Locked ✔<br>
+           Isi UPI ID par payment hogi. Change possible nahi hai.
+         </div>`;
     }
   });
 }
 loadData();
 
 function saveUpi(){
-  const u = document.getElementById("upi").value.trim();
-  if(!u || !u.includes("@")){
-    alert("Invalid UPI ID");
+  const u = document.getElementById("upi").value.trim().toLowerCase();
+
+  if(!u.includes("@")){
+    alert("❌ Invalid UPI ID");
     return;
   }
-  fetch(`${API}?uid=${uid}&upi=${u}`).then(()=>loadData());
+
+  if(u.includes("gmail.com") || u.includes("yahoo.com") || u.includes("outlook.com")){
+    alert("❌ Gmail / Email ID allowed nahi hai.\nPlease enter valid UPI ID.");
+    return;
+  }
+
+  fetch(`${API}?uid=${uid}&upi=${u}`)
+  .then(()=>loadData());
 }
 </script>
 
