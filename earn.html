@@ -4,50 +4,68 @@
 <meta charset="UTF-8">
 <title>Earn Coins</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
 <style>
 body{
-  background:#0b0f1a;
+  margin:0;
+  background:linear-gradient(160deg,#0b0f1a,#070a14);
   color:#fff;
-  font-family:Arial;
-  text-align:center;
+  font-family:Arial,Helvetica,sans-serif;
   padding:20px;
 }
+
+h2{text-align:center;margin-bottom:15px}
+
 .card{
   background:#121a2f;
-  border-radius:14px;
+  border-radius:16px;
   padding:20px;
   margin:15px auto;
   max-width:420px;
+  box-shadow:0 0 25px rgba(0,0,0,.4);
 }
-button{
-  background:#1ecb4f;
-  color:#000;
-  border:none;
-  padding:15px;
-  width:100%;
-  font-size:18px;
-  border-radius:10px;
-}
-button:disabled{
-  opacity:.5;
-}
+
 input{
   width:100%;
-  padding:12px;
-  border-radius:8px;
+  padding:14px;
+  border-radius:10px;
   border:none;
-  margin-top:10px;
   font-size:16px;
+  margin-top:10px;
+  outline:none;
 }
+
+button{
+  width:100%;
+  margin-top:15px;
+  padding:15px;
+  border-radius:12px;
+  border:none;
+  background:#1ecb4f;
+  color:#000;
+  font-size:18px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
 .warn{
   color:#ffcc00;
   font-size:13px;
-  margin-top:8px;
+  margin-top:12px;
+  line-height:1.5;
 }
-.lock{
-  color:#00ffcc;
-  font-size:13px;
-  margin-top:6px;
+
+.locked{
+  background:#0d1428;
+  padding:15px;
+  border-radius:12px;
+  font-size:15px;
+}
+
+.future{
+  opacity:.6;
+  font-size:14px;
+  margin-top:10px;
 }
 </style>
 </head>
@@ -59,65 +77,83 @@ input{
 <div class="card">
   <b>User ID:</b> <span id="uid">---</span><br><br>
   <b>Total Coins:</b> <span id="coins">0</span>
+  <div class="future">🚀 Withdrawal feature coming soon</div>
 </div>
 
 <div class="card" id="upiBox">
   <h3>🔐 Add Your UPI ID</h3>
 
-  <input 
-    id="upi"
-    placeholder="example@upi"
-    inputmode="email"
-    autocomplete="on"
-  >
+  <input id="upi" inputmode="text" placeholder="example@upi">
 
   <button onclick="saveUpi()">Save UPI ID</button>
 
   <div class="warn">
     ⚠️ Warning / चेतावनी<br>
-    Aapke dwara kamayi gayi rakam isi UPI ID / number par transfer hogi.<br>
+    Aapke dwara kamayi gayi rakam isi UPI ID par transfer hogi.<br>
     Once save karne ke baad ise change nahi kiya ja sakta.
   </div>
 </div>
 
 <script>
-const API = "https://script.google.com/macros/s/AKfycbz4NJNIwumeIrfQLG7xLneFsfbyGqPyD8ij3n3YCm5pGQXJFMPlR3-pYQex5hCHzHilIQ/exec";
-const uid = new URLSearchParams(location.search).get("uid");
-document.getElementById("uid").innerText = uid;
+const API="https://script.google.com/macros/s/AKfycbz4NJNIwumeIrfQLG7xLneFsfbyGqPyD8ij3n3YCm5pGQXJFMPlR3-pYQex5hCHzHilIQ/exec";
+
+const uid=new URLSearchParams(location.search).get("uid");
+document.getElementById("uid").innerText=uid||"Unknown";
+
+function isValidUPI(u){
+ if(!u.includes("@")) return false;
+ const block=["gmail","yahoo","outlook","hotmail"];
+ for(let i of block){
+  if(u.toLowerCase().includes(i)) return false;
+ }
+ return true;
+}
 
 function loadData(){
-  fetch(`${API}?uid=${uid}`)
-  .then(r=>r.json())
-  .then(d=>{
-    document.getElementById("coins").innerText = d.coins;
-    if(d.upi){
-      document.getElementById("upiBox").innerHTML =
-        `<b>UPI ID 🔒</b><br>
-         ${d.upi}
-         <div class="lock">
-           Locked ✔<br>
-           Isi UPI ID par payment hogi. Change possible nahi hai.
-         </div>`;
-    }
-  });
+ fetch(`${API}?uid=${uid}`)
+ .then(r=>r.json())
+ .then(d=>{
+  document.getElementById("coins").innerText=d.coins||0;
+  if(d.upi){
+   document.getElementById("upiBox").innerHTML=`
+    <div class="locked">
+     🔒 <b>UPI ID Locked</b><br><br>
+     ${d.upi}<br><br>
+     <span class="warn">
+      Payment isi UPI ID par hogi.<br>
+      Change allowed nahi hai.
+     </span>
+    </div>`;
+  }
+ });
 }
 loadData();
 
 function saveUpi(){
-  const u = document.getElementById("upi").value.trim().toLowerCase();
+ const u=document.getElementById("upi").value.trim();
 
-  if(!u.includes("@")){
-    alert("❌ Invalid UPI ID");
-    return;
-  }
+ if(!isValidUPI(u)){
+  alert("❌ Invalid UPI ID\nExample: 9876543210@paytm");
+  return;
+ }
 
-  if(u.includes("gmail.com") || u.includes("yahoo.com") || u.includes("outlook.com")){
-    alert("❌ Gmail / Email ID allowed nahi hai.\nPlease enter valid UPI ID.");
-    return;
-  }
+ const msg=`⚠️ WARNING / चेतावनी
 
-  fetch(`${API}?uid=${uid}&upi=${u}`)
-  .then(()=>loadData());
+Aapke dwara kamayi gayi rakam
+isi UPI ID par transfer hogi.
+
+Once save karne ke baad
+UPI ID change nahi ki ja sakti.
+
+Are you sure?`;
+
+ if(!confirm(msg)) return;
+
+ fetch(`${API}?uid=${uid}&upi=${u}`)
+ .then(()=>{
+  alert("✅ UPI ID Saved & Locked");
+  loadData();
+ });
 }
 </script>
 
