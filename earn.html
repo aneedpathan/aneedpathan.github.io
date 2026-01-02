@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <title>Earn Coins</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
 <style>
 body{
  background:#0b0f1a;
@@ -38,26 +39,27 @@ button{
  margin-top:12px;
  cursor:pointer;
 }
-.option{
+.suggest{
  background:#0d1428;
  padding:12px;
  border-radius:10px;
- margin-top:8px;
+ margin-top:6px;
  cursor:pointer;
+ text-align:left;
 }
+.suggest:hover{background:#1a275a;}
 .warn{
  color:#ffcc00;
  font-size:13px;
  margin-top:10px;
 }
+.disabled{
+ opacity:.6;
+ pointer-events:none;
+}
 .coming{
  opacity:.6;
  font-size:14px;
- margin-top:8px;
-}
-.disabled{
- opacity:.5;
- pointer-events:none;
 }
 </style>
 </head>
@@ -66,33 +68,32 @@ button{
 
 <h2>💰 Earn Coins</h2>
 
-<!-- USER INFO -->
 <div class="card">
  <b>User ID:</b> <span id="uid">---</span><br><br>
  <b>Total Coins:</b> <span id="coins">0</span>
 </div>
 
-<!-- EARN MONEY BOX (NON CLICKABLE) -->
 <div class="card disabled">
  <h3>🤑 Earn Money</h3>
  <div class="coming">🚧 This feature coming soon</div>
 </div>
 
-<!-- UPI BOX -->
 <div class="card" id="upiBox">
  <h3>🔐 Add Your UPI ID</h3>
 
- <input id="num" inputmode="numeric" placeholder="Enter mobile number">
+ <input id="upiInput" inputmode="numeric"
+  placeholder="Enter mobile number"
+  oninput="showSuggestions()">
 
- <button onclick="showOptions()">Save UPI ID</button>
+ <div id="suggestions"></div>
+
+ <button onclick="saveUpi()">Save UPI ID</button>
 
  <div class="warn">
  ⚠️ Warning / चेतावनी<br>
  Aapke dwara kamayi gayi rakam isi UPI ID par transfer hogi.<br>
  Once save karne ke baad change nahi hogi.
  </div>
-
- <div id="options"></div>
 </div>
 
 <script>
@@ -100,49 +101,70 @@ const API="https://script.google.com/macros/s/AKfycbz4NJNIwumeIrfQLG7xLneFsfbyGq
 const uid=new URLSearchParams(location.search).get("uid");
 document.getElementById("uid").innerText=uid||"Unknown";
 
+let selectedUpi="";
+
 function load(){
  fetch(`${API}?uid=${uid}`)
  .then(r=>r.json())
  .then(d=>{
   document.getElementById("coins").innerText=d.coins||0;
-  if(d.upi){
-   document.getElementById("upiBox").innerHTML=
-   `<b>🔒 UPI Locked</b><br><br>${d.upi}
-    <div class="warn">Change allowed nahi hai</div>`;
-  }
+  if(d.upi) lockUpi(d.upi);
  });
 }
 load();
 
-function showOptions(){
- const n=document.getElementById("num").value.trim();
- if(n.length<10){
-  alert("Invalid mobile number");
-  return;
- }
- const upis=[
+function showSuggestions(){
+ const n=document.getElementById("upiInput").value.trim();
+ const box=document.getElementById("suggestions");
+ box.innerHTML="";
+ selectedUpi="";
+
+ if(n.length<10) return;
+
+ const list=[
   `${n}@paytm`,
   `${n}@ybl`,
   `${n}@upi`,
   `${n}@axl`
  ];
- let html="";
- upis.forEach(u=>{
-  html+=`<div class="option" onclick="saveUpi('${u}')">${u}</div>`;
+
+ list.forEach(u=>{
+  box.innerHTML+=`
+   <div class="suggest" onclick="selectUpi('${u}')">
+    ${u}
+   </div>`;
  });
- document.getElementById("options").innerHTML=html;
 }
 
-function saveUpi(u){
+function selectUpi(upi){
+ selectedUpi=upi;
+ document.getElementById("upiInput").value=upi;
+ document.getElementById("suggestions").innerHTML="";
+}
+
+function saveUpi(){
+ if(!selectedUpi){
+  alert("Please select a valid UPI ID");
+  return;
+ }
+
  if(!confirm(
- `Save this UPI ID?\n${u}\n\nOnce saved, cannot be changed`
+  `Confirm UPI ID?\n${selectedUpi}\n\nOnce saved cannot be changed`
  )) return;
 
- fetch(`${API}?uid=${uid}&upi=${u}`)
- .then(()=>{
-  alert("UPI ID Saved & Locked 🔒");
-  load();
- });
+ fetch(`${API}?uid=${uid}&upi=${selectedUpi}`)
+ .then(()=>lockUpi(selectedUpi));
+}
+
+function lockUpi(upi){
+ document.getElementById("upiBox").innerHTML=`
+  <h3>🔒 UPI Locked</h3>
+  <b>${upi}</b>
+  <div class="warn">
+   Aapki kamayi isi UPI ID par transfer hogi.<br>
+   Change allowed nahi hai.
+  </div>
+ `;
 }
 </script>
 
