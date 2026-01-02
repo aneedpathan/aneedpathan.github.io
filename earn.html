@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Earn Coins</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body{
+  background:#0b0f1a;
+  color:#fff;
+  font-family:Arial;
+  text-align:center;
+  padding:20px;
+}
+.card{
+  background:#121a2f;
+  border-radius:14px;
+  padding:20px;
+  margin:15px auto;
+  max-width:420px;
+}
+button{
+  background:#1ecb4f;
+  color:#000;
+  border:none;
+  padding:15px;
+  width:100%;
+  font-size:18px;
+  border-radius:10px;
+}
+button:disabled{
+  opacity:.5;
+  cursor:not-allowed;
+}
+input{
+  width:100%;
+  padding:12px;
+  border-radius:8px;
+  border:none;
+  margin-top:10px;
+}
+.warn{
+  color:#ffcc00;
+  font-size:13px;
+  margin-top:8px;
+}
+.coming{
+  color:#00e0ff;
+  font-size:14px;
+  margin-top:10px;
+}
+</style>
+</head>
+
+<body>
+
+<h2>💰 Earn Coins</h2>
+
+<div class="card">
+  <b>User ID:</b> <span id="uid">---</span><br><br>
+  <b>Total Coins:</b> <span id="coins">0</span>
+</div>
+
+<div class="card" id="upiBox">
+  <h3>🔐 Add Your UPI ID</h3>
+  <input id="upi" placeholder="example@upi">
+  <button onclick="saveUpi()">Save UPI ID</button>
+  <div class="warn">⚠️ UPI ID can be added only once. Cannot be changed.</div>
+</div>
+
+<!-- TASK CARD (DISABLED) -->
+<div class="card">
+  <button disabled>Complete Task (+10)</button>
+  <div class="coming">🚧 This feature coming soon</div>
+</div>
+
+<script>
+const API = "https://script.google.com/macros/s/AKfycbz4NJNIwumeIrfQLG7xLneFsfbyGqPyD8ij3n3YCm5pGQXJFMPlR3-pYQex5hCHzHilIQ/exec";
+const uid = new URLSearchParams(location.search).get("uid");
+document.getElementById("uid").innerText = uid;
+
+function loadData(){
+  fetch(`${API}?uid=${uid}`)
+  .then(r=>r.json())
+  .then(d=>{
+    document.getElementById("coins").innerText = d.coins;
+    if(d.upi){
+      document.getElementById("upiBox").innerHTML =
+        `<b>UPI ID 🔒</b><br>${d.upi}<div class='warn'>Locked – cannot change</div>`;
+    }
+  });
+}
+loadData();
+
+function saveUpi(){
+  const u = document.getElementById("upi").value.trim();
+  if(!u || !u.includes("@")){
+    alert("Invalid UPI ID");
+    return;
+  }
+  fetch(`${API}?uid=${uid}&upi=${u}`).then(()=>loadData());
+}
+</script>
+
+</body>
+</html>
